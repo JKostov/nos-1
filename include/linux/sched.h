@@ -621,10 +621,10 @@ struct wake_q_node {
 	struct wake_q_node *next;
 };
 
-struct state_chage {
+struct state_change {
 	long state;
 	u64 time;
-	struct list_head next;
+	struct list_head list;
 };
 
 struct task_struct {
