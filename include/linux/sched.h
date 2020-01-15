@@ -625,7 +625,7 @@ struct state_chage {
 	long state;
 	u64 time;
 	struct list_head next;
-}
+};
 
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
