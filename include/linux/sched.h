@@ -621,6 +621,12 @@ struct wake_q_node {
 	struct wake_q_node *next;
 };
 
+struct state_chage {
+	long state;
+	u64 time;
+	struct list_head next;
+}
+
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 	/*
@@ -1267,6 +1273,9 @@ struct task_struct {
 	unsigned long			lowest_stack;
 	unsigned long			prev_lowest_stack;
 #endif
+
+
+	struct state_change state_changes;
 
 	/*
 	 * New fields for task_struct should be added above here, so that
