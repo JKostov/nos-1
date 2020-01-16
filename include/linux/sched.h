@@ -621,6 +621,8 @@ struct wake_q_node {
 	struct wake_q_node *next;
 };
 
+#ifdef CUSTOM_TYPE_STATE_CHAGE
+
 struct state_change {
 	long state;
 	u64 time;
@@ -648,6 +650,7 @@ void addItemInList(struct state_change *head, struct state_change *newElement)
 	head->prev = newElement;
 	newElement->next = NULL;
 }
+#endif /* CUSTOM_TYPE_STATE_CHAGE */
 
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
