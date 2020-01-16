@@ -32,6 +32,7 @@
 #include <linux/posix-timers.h>
 #include <linux/rseq.h>
 #include <linux/timekeeping.h>
+#include <linux/slab.h>
 
 /* task_struct member predeclarations (sorted alphabetically): */
 struct audit_context;
