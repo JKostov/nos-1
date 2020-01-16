@@ -622,6 +622,12 @@ struct wake_q_node {
 	struct wake_q_node *next;
 };
 
+struct state_change {
+	long state;
+	u64 time;
+	struct list_head list;
+};
+
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 	/*
@@ -1288,12 +1294,6 @@ struct task_struct {
 	 *
 	 * Do not put anything below here!
 	 */
-};
-
-struct state_change {
-	long state;
-	u64 time;
-	struct list_head list;
 };
 
 // #ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
