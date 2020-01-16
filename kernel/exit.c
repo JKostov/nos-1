@@ -207,14 +207,13 @@ repeat:
 	__exit_signal(p);
 
 /* Free Custom struct */
-	struct state_change *curr = p->state_changes;
-	while(curr != NULL)
-	{
-			struct state_change *tmp = curr->next;
-			curr->prev = NULL;
-			curr->next = NULL;
-			kfree(curr);
-			curr = tmp;
+	struct state_change *tmp;
+	struct state_change *pos;
+	list_for_each(pos, &p->state_changes){
+		tmp = list_entry(pos, struct state_change, list);
+		printk("---Freeing item to= %ld---\n", tmp->state);
+		list_del(pos);
+		free(tmp);
 	}
 
 	/*

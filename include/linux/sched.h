@@ -624,33 +624,8 @@ struct wake_q_node {
 struct state_change {
 	long state;
 	u64 time;
-	struct state_change *next;
-	struct state_change *prev;
+	struct list_head list;
 };
-
-#ifdef CUSTOM_TYPE_STATE_CHAGE_FUNCTIONS
-
-void addItemInList(struct state_change *head, struct state_change *newElement)
-{
-	if (head == NULL)
-	{
-		head = newElement;
-	}
-
-	if (head-> prev == NULL && head->next == NULL)
-	{
-			head->prev = newElement;
-			head->next = newElement;
-			newElement->next = NULL;
-			newElement->prev = head;
-	}
-	
-	(head->prev)->next = newElement;
-	newElement->prev = head->prev;
-	head->prev = newElement;
-	newElement->next = NULL;
-}
-#endif /* CUSTOM_TYPE_STATE_CHAGE */
 
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
@@ -1300,7 +1275,7 @@ struct task_struct {
 #endif
 
 
-	struct state_change *state_changes;
+	struct state_change state_changes;
 
 	/*
 	 * New fields for task_struct should be added above here, so that
