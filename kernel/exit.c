@@ -213,7 +213,7 @@ repeat:
 		tmp = list_entry(pos, struct state_change, list);
 		printk("---Freeing item to= %ld---\n", tmp->state);
 		list_del(pos);
-		free(tmp);
+		kfree(tmp);
 	}
 
 	/*
