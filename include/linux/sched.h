@@ -628,6 +628,8 @@ struct state_change {
 	struct list_head list;
 };
 
+struct task_struct;
+
 // #ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
 	static inline struct state_change* create_new_state_change(long current_state)
 	{
@@ -642,7 +644,7 @@ struct state_change {
 	{
 		p->state = state;
 		struct state_change *new = create_new_state_change(state);
-		list_add_tail(new->list, p->state_changes.list);
+		list_add_tail(&new->list, &p->state_changes.list);
 		printk("ADDED NEW STATE - %ld\r\n", state);
 	}
 // #endif
