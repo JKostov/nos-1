@@ -621,14 +621,14 @@ struct wake_q_node {
 	struct wake_q_node *next;
 };
 
-#ifdef CUSTOM_TYPE_STATE_CHAGE
-
 struct state_change {
 	long state;
 	u64 time;
 	struct state_change *next;
 	struct state_change *prev;
 };
+
+#ifdef CUSTOM_TYPE_STATE_CHAGE_FUNCTIONS
 
 void addItemInList(struct state_change *head, struct state_change *newElement)
 {
