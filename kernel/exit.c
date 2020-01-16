@@ -207,7 +207,6 @@ repeat:
 	__exit_signal(p);
 
 /* Free Custom struct */
-	struct state_change *tmp_sc = &p->state_changes;
 	struct state_change *curr = p->state_changes;
 	while(curr != NULL)
 	{
