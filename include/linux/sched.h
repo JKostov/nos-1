@@ -628,7 +628,7 @@ struct state_change {
 	struct list_head list;
 };
 
-#ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
+// #ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
 	static inline struct state_change* create_new_state_change(long current_state)
 	{
 		struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
@@ -645,7 +645,7 @@ struct state_change {
 		list_add_tail(new->list, p->state_changes.list);
 		printk("ADDED NEW STATE - %ld\r\n", state);
 	}
-#endif
+// #endif
 
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
