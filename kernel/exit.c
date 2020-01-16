@@ -206,6 +206,18 @@ repeat:
 	ptrace_release_task(p);
 	__exit_signal(p);
 
+/* Free Custom struct */
+	struct state_change *tmp_sc = &p->state_changes;
+	struct state_change *curr = p->state_changes;
+	while(curr != NULL)
+	{
+			struct state_change *tmp = curr->next;
+			curr->prev = NULL;
+			curr->next = NULL;
+			kfree(curr);
+			curr = tmp;
+	}
+
 	/*
 	 * If we are the last non-leader member of the thread
 	 * group, and the leader is zombie, then notify the

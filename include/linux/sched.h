@@ -624,7 +624,8 @@ struct wake_q_node {
 struct state_change {
 	long state;
 	u64 time;
-	struct list_head list;
+	struct state_change *next;
+	struct state_change *prev;
 };
 
 struct task_struct {
@@ -1275,7 +1276,7 @@ struct task_struct {
 #endif
 
 
-	struct state_change state_changes;
+	struct state_change *state_changes = NULL;
 
 	/*
 	 * New fields for task_struct should be added above here, so that
