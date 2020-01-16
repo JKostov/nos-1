@@ -627,6 +627,17 @@ struct state_change {
 	struct list_head list;
 };
 
+#ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
+	static state_change* createNewStateChange(long currentState, u64 currentTime)
+	{
+		struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
+		tmp->state = currentState;
+		tmp->time = currentTime;
+		INIT_LIST_HEAD(&tmp->list);
+		return tmp;
+	}
+#endif
+
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 	/*
@@ -1275,6 +1286,7 @@ struct task_struct {
 #endif
 
 
+	/* Custom property for logging state changes */
 	struct state_change state_changes;
 
 	/*
