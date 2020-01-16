@@ -31,6 +31,7 @@
 #include <linux/task_io_accounting.h>
 #include <linux/posix-timers.h>
 #include <linux/rseq.h>
+#include <linux/timekeeping.h>
 
 /* task_struct member predeclarations (sorted alphabetically): */
 struct audit_context;
@@ -628,18 +629,21 @@ struct state_change {
 };
 
 #ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
-	static inline struct state_change* create_new_state_change(long current_state, u64 current_time)
+	static inline struct state_change* create_new_state_change(long current_state)
 	{
 		struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
 		tmp->state = current_state;
-		tmp->time = current_time;
+		tmp->time = ktime_get_ns();
 		// INIT_LIST_HEAD(&tmp->list);
 		return tmp;
 	}
 
-	static inline void set_task_state_and_log_change()
+	static inline void set_task_state_and_log_change(struct task_struct* p, long state)
 	{
-
+		p->state = state;
+		struct state_change *new = create_new_state_change(state);
+		list_add_tail(new->list, p->state_changes.list);
+		printk("ADDED NEW STATE - %ld\r\n", state);
 	}
 #endif
 
