@@ -628,13 +628,18 @@ struct state_change {
 };
 
 #ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
-	static inline struct state_change* createNewStateChange(long currentState, u64 currentTime)
+	static inline struct state_change* create_new_state_change(long current_state, u64 current_time)
 	{
 		struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
-		tmp->state = currentState;
-		tmp->time = currentTime;
-		INIT_LIST_HEAD(&tmp->list);
+		tmp->state = current_state;
+		tmp->time = current_time;
+		// INIT_LIST_HEAD(&tmp->list);
 		return tmp;
+	}
+
+	static inline void set_task_state_and_log_change()
+	{
+
 	}
 #endif
 

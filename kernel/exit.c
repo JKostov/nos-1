@@ -209,7 +209,7 @@ repeat:
 /* Free Custom struct */
 	struct state_change *tmp;
 	struct list_head *pos;
-	list_for_each(pos, &p->state_changes){
+	list_for_each(pos, &p->state_changes.list){
 		tmp = list_entry(pos, struct state_change, list);
 		printk("---Freeing item to= %ld---\n", tmp->state);
 		list_del(pos);
