@@ -20,6 +20,8 @@
 
 #include "pelt.h"
 
+#include<linux/sched.h>
+
 #define CREATE_TRACE_POINTS
 #include <trace/events/sched.h>
 
