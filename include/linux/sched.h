@@ -628,7 +628,7 @@ struct state_change {
 };
 
 #ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
-	static state_change* createNewStateChange(long currentState, u64 currentTime)
+	static inline struct state_change* createNewStateChange(long currentState, u64 currentTime)
 	{
 		struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
 		tmp->state = currentState;
