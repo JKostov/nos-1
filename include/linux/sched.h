@@ -1329,9 +1329,9 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 /** NOS-EXTENSION */
 static inline void add_new_state_in_state_changes(struct task_struct* p, long state)
 {
-	struct state_change *new = create_new_state_change(state);
-	list_add_tail(&new->list, &p->state_changes.list);
-	// printk("ADDED NEW STATE - %ld\r\n", state);
+	// struct state_change *new = create_new_state_change(state);
+	// list_add_tail(&new->list, &p->state_changes.list);
+	printk("ADDED NEW STATE - %ld\r\n", state);
 }
 
 static inline struct pid *task_pid(struct task_struct *task)
