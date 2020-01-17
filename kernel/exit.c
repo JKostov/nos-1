@@ -192,6 +192,17 @@ void release_task(struct task_struct *p)
 {
 	struct task_struct *leader;
 	int zap_leader;
+	
+	/* Free Custom struct */
+	struct state_change *tmp;
+	struct list_head *pos;
+	list_for_each(pos, &p->state_changes.list){
+		tmp = list_entry(pos, struct state_change, list);
+		printk("---Freeing item to= %ld---\n", tmp->state);
+		list_del(pos);
+		kfree(tmp);
+	}
+
 repeat:
 	/* don't need to get the RCU readlock here - the process is dead and
 	 * can't be modifying its own credentials. But shut RCU-lockdep up */
@@ -205,16 +216,6 @@ repeat:
 	write_lock_irq(&tasklist_lock);
 	ptrace_release_task(p);
 	__exit_signal(p);
-
-/* Free Custom struct */
-	struct state_change *tmp;
-	struct list_head *pos;
-	list_for_each(pos, &p->state_changes.list){
-		tmp = list_entry(pos, struct state_change, list);
-		printk("---Freeing item to= %ld---\n", tmp->state);
-		list_del(pos);
-		kfree(tmp);
-	}
 
 	/*
 	 * If we are the last non-leader member of the thread
