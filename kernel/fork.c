@@ -176,7 +176,7 @@ static inline void free_task_struct(struct task_struct *tsk)
 	struct list_head *pos;
 	list_for_each(pos, &tsk->state_changes.list){
 		tmp = list_entry(pos, struct state_change, list);
-		printk("---Freeing item to= %ld---\n", tmp->state);
+		// printk("---Freeing item to= %ld---\n", tmp->state);
 		// list_del(pos);
 		// kfree(tmp);
 	}
