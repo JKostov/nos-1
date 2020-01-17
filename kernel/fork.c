@@ -2392,6 +2392,8 @@ long _do_fork(struct kernel_clone_args *args)
 	INIT_LIST_HEAD(&p->state_changes.list);
 	p->state_changes.state = 0;
 	p->state_changes.time = 0;
+	struct state_change *test_new = create_new_state_change(2);
+	list_add_tail(&test_new->list, &p->state_changes.list);
 
 	wake_up_new_task(p);
 
