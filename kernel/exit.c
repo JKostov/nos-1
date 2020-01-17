@@ -193,6 +193,7 @@ void release_task(struct task_struct *p)
 	struct task_struct *leader;
 	int zap_leader;
 	
+	/** NOS-EXTENSION */
 	/* Free Custom struct */
 	/*struct state_change *tmp;
 	struct list_head *pos;

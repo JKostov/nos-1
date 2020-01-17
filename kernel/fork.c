@@ -171,6 +171,16 @@ static inline struct task_struct *alloc_task_struct_node(int node)
 
 static inline void free_task_struct(struct task_struct *tsk)
 {
+	/** NOS-EXTENSION */
+	struct state_change *tmp;
+	struct list_head *pos;
+	list_for_each(pos, &p->state_changes.list){
+		tmp = list_entry(pos, struct state_change, list);
+		printk("---Freeing item to= %ld---\n", tmp->state);
+		list_del(pos);
+		kfree(tmp);
+	}
+
 	kmem_cache_free(task_struct_cachep, tsk);
 }
 #endif
@@ -2376,6 +2386,12 @@ long _do_fork(struct kernel_clone_args *args)
 		init_completion(&vfork);
 		get_task_struct(p);
 	}
+
+	/** NOS-EXTENSION */
+	/** Init custom structure */
+	INIT_LIST_HEAD(&p->state_changes.list);
+	p->state_changes.state = 0;
+	p->state_changes.time = 0;
 
 	wake_up_new_task(p);
 

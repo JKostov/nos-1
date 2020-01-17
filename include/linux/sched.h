@@ -623,6 +623,7 @@ struct wake_q_node {
 	struct wake_q_node *next;
 };
 
+/** NOS-EXTENSION */
 struct state_change {
 	long state;
 	u64 time;
@@ -1277,6 +1278,7 @@ struct task_struct {
 #endif
 
 
+	/** NOS-EXTENSION */
 	/* Custom property for logging state changes */
 	struct state_change state_changes;
 
@@ -1297,7 +1299,7 @@ struct task_struct {
 	 */
 };
 
-// #ifdef STATE_CHANGE_CUSTOM_FUNCTIONS
+/** NOS-EXTENSION */
 static inline struct state_change* create_new_state_change(long current_state)
 {
 	struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
@@ -1307,6 +1309,7 @@ static inline struct state_change* create_new_state_change(long current_state)
 	return tmp;
 }
 
+/** NOS-EXTENSION */
 static inline void set_task_state_and_log_change(struct task_struct* p, long state)
 {
 	p->state = state;
@@ -1314,7 +1317,6 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 	list_add_tail(&new->list, &p->state_changes.list);
 	printk("ADDED NEW STATE - %ld\r\n", state);
 }
-// #endif
 
 static inline struct pid *task_pid(struct task_struct *task)
 {

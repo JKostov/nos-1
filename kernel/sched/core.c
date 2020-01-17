@@ -4035,6 +4035,7 @@ static void __sched notrace __schedule(bool preempt)
 	switch_count = &prev->nivcsw;
 	if (!preempt && prev->state) {
 		if (signal_pending_state(prev->state, prev)) {
+			/** NOS-EXTENSION */
 			set_task_state_and_log_change(prev, TASK_RUNNING);
 		} else {
 			deactivate_task(rq, prev, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
