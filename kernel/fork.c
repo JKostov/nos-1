@@ -177,8 +177,8 @@ static inline void free_task_struct(struct task_struct *tsk)
 	list_for_each(pos, &tsk->state_changes.list){
 		tmp = list_entry(pos, struct state_change, list);
 		printk("---Freeing item to= %ld---\n", tmp->state);
-		list_del(pos);
-		kfree(tmp);
+		// list_del(pos);
+		// kfree(tmp);
 	}
 
 	kmem_cache_free(task_struct_cachep, tsk);
