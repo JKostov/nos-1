@@ -173,8 +173,8 @@ static inline void free_task_struct(struct task_struct *tsk)
 {
 	/** NOS-EXTENSION */
 	struct state_change *tmp;
-	struct list_head *pos;
-	list_for_each_safe(pos, &tsk->state_changes.list){
+	struct list_head *pos, *q;
+	list_for_each_safe(pos, q, &tsk->state_changes.list){
 		tmp = list_entry(pos, struct state_change, list);
 		printk("---Freeing item to= %ld---\n", tmp->state);
 		list_del(pos);
