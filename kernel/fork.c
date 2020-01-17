@@ -171,7 +171,6 @@ static inline struct task_struct *alloc_task_struct_node(int node)
 
 static inline void free_task_struct(struct task_struct *tsk)
 {
-	printk("FREE MEMORY LOG!\r\n");
 	/** NOS-EXTENSION */
 	struct state_change *tmp;
 	struct list_head *pos;

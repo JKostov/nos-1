@@ -194,14 +194,14 @@ struct task_group;
 */
 
 /** NOS-EXTENSION */
-#define __set_current_state(state_value) ({ current->state = (state_value); })
+#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(current, state_value); })
 
 /*#define set_current_state(state_value)					\
 	smp_store_mb(current->state, (state_value))
 */
 
 /** NOS-EXTENSION */
-#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); })
+#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(current, state_value); })
 
 /*
  * set_special_state() should be used for those states when the blocking task
@@ -1313,7 +1313,7 @@ static inline struct state_change* create_new_state_change(long current_state)
 	struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
 	tmp->state = current_state;
 	tmp->time = ktime_get_ns();
-	// INIT_LIST_HEAD(&tmp->list);
+	INIT_LIST_HEAD(&tmp->list);
 	return tmp;
 }
 
@@ -1323,7 +1323,15 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 	p->state = state;
 	struct state_change *new = create_new_state_change(state);
 	list_add_tail(&new->list, &p->state_changes.list);
-	printk("ADDED NEW STATE - %ld\r\n", state);
+	// printk("ADDED NEW STATE - %ld\r\n", state);
+}
+
+/** NOS-EXTENSION */
+static inline void add_new_state_in_state_changes(struct task_struct* p, long state)
+{
+	struct state_change *new = create_new_state_change(state);
+	list_add_tail(&new->list, &p->state_changes.list);
+	// printk("ADDED NEW STATE - %ld\r\n", state);
 }
 
 static inline struct pid *task_pid(struct task_struct *task)
