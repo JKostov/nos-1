@@ -2230,6 +2230,12 @@ static __latent_entropy struct task_struct *copy_process(
 	trace_task_newtask(p, clone_flags);
 	uprobe_copy_process(p, clone_flags);
 
+	/** NOS-EXTENSION */
+	/** Init custom structure */
+	INIT_LIST_HEAD(&p->state_changes.list);
+	p->state_changes.state = 0;
+	p->state_changes.time = 0;
+
 	return p;
 
 bad_fork_cancel_cgroup:
@@ -2363,13 +2369,6 @@ long _do_fork(struct kernel_clone_args *args)
 	}
 
 	p = copy_process(NULL, trace, NUMA_NO_NODE, args);
-	
-	/** NOS-EXTENSION */
-	/** Init custom structure */
-	INIT_LIST_HEAD(&p->state_changes.list);
-	p->state_changes.state = 0;
-	p->state_changes.time = 0;
-
 	add_latent_entropy();
 
 	if (IS_ERR(p))
