@@ -214,7 +214,6 @@ struct task_group;
 		unsigned long flags; /* may shadow */			\
 		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
 		current->state = (state_value);				\
-		printk("STATE CHANGE: %ld\r\n", state_value);    \
 		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
 	} while (0)
 
@@ -1313,7 +1312,7 @@ static inline struct state_change* create_new_state_change(long current_state)
 {
 	struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
 	tmp->state = current_state;
-	tmp->time = ktime_get_ns();
+	// tmp->time = ktime_get_ns();
 	INIT_LIST_HEAD(&tmp->list);
 	return tmp;
 }
@@ -1327,7 +1326,7 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 	}
 	p->state = state;
 	struct state_change *new = create_new_state_change(state);
-	list_add_tail(&new->list, &p->state_changes.list);
+	list_add(&new->list, &p->state_changes.list);
 }
 
 /** NOS-EXTENSION */
@@ -1338,7 +1337,7 @@ static inline void add_new_state_in_state_changes(struct task_struct* p, long st
 		return;
 	}
 	struct state_change *new = create_new_state_change(state);
-	// list_add_tail(&new->list, &p->state_changes.list);
+	list_add(&new->list, &p->state_changes.list);
 }
 
 static inline struct pid *task_pid(struct task_struct *task)
