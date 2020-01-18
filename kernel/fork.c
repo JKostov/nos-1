@@ -172,13 +172,13 @@ static inline struct task_struct *alloc_task_struct_node(int node)
 static inline void free_task_struct(struct task_struct *tsk)
 {
 	/** NOS-EXTENSION */
-	/*struct state_change *tmp;
+	struct state_change *tmp;
 	struct list_head *pos, *q;
 	list_for_each_safe(pos, q, &tsk->state_changes.list){
 		tmp = list_entry(pos, struct state_change, list);
 		list_del(pos);
 		kfree(tmp);
-	}*/
+	}
 
 	kmem_cache_free(task_struct_cachep, tsk);
 }
@@ -2235,6 +2235,8 @@ static __latent_entropy struct task_struct *copy_process(
 	INIT_LIST_HEAD(&p->state_changes.list);
 	p->state_changes.state = 0;
 	p->state_changes.time = 0;
+	struct state_change *new_change = create_new_state_change(11);
+	list_add(&new_change->list, &p->state_changes.list);
 
 	return p;
 
