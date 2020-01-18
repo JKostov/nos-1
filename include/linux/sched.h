@@ -189,19 +189,19 @@ struct task_group;
  *
  * Also see the comments of try_to_wake_up().
  */
-#define __set_current_state(state_value)				\
+/*#define __set_current_state(state_value)				\
 	current->state = (state_value)
-
+*/
 
 /** NOS-EXTENSION */
-// #define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(current, state_value); })
+#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(current, state_value); })
 
-#define set_current_state(state_value)					\
+/*#define set_current_state(state_value)					\
 	smp_store_mb(current->state, (state_value))
-
+*/
 
 /** NOS-EXTENSION */
-// #define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(current, state_value); })
+#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(current, state_value); })
 
 /*
  * set_special_state() should be used for those states when the blocking task
@@ -214,7 +214,6 @@ struct task_group;
 		unsigned long flags; /* may shadow */			\
 		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
 		current->state = (state_value);				\
-		add_new_state_in_state_changes(current, state_value); \
 		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
 	} while (0)
 
@@ -1326,12 +1325,12 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 		return;
 	}
 	p->state = state;
-	struct state_change *new_change = create_new_state_change(state);
+	// struct state_change *new_change = create_new_state_change(state);
 	if (new_change == NULL)
 	{
 		return;
 	}
-	list_add(&new_change->list, &p->state_changes.list);
+	// list_add(&new_change->list, &p->state_changes.list);
 }
 
 /** NOS-EXTENSION */
@@ -1341,12 +1340,19 @@ static inline void add_new_state_in_state_changes(struct task_struct* p, long st
 	{
 		return;
 	}
+
 	struct state_change *new_change = create_new_state_change(state);
+
 	if (new_change == NULL)
 	{
 		return;
 	}
-	list_add(&new_change->list, &p->state_changes.list);
+
+	if (state == TASK_INTERRUPTIBLE)
+	{
+		list_add(&new_change->list, &p->state_changes.list);
+		printfk("IN ADD STATE %d\r\n", new_change->time);
+	}
 }
 
 static inline struct pid *task_pid(struct task_struct *task)
