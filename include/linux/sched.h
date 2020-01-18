@@ -632,11 +632,14 @@ struct wake_q_node {
 };
 
 /** NOS-EXTENSION */
+#ifndef NOS_EXTENSION_CUSTOM_STRUCT
+#define NOS_EXTENSION_CUSTOM_STRUCT
 struct state_change {
 	long state;
 	u64 time;
 	struct list_head list;
 };
+#endif
 
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
@@ -1308,6 +1311,8 @@ struct task_struct {
 };
 
 /** NOS-EXTENSION */
+#ifndef NOS_EXTENSION_CUSTOM_FUCTIONS
+#define NOS_EXTENSION_CUSTOM_FUCTIONS
 static inline struct state_change* create_new_state_change(long current_state)
 {
 	struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
@@ -1354,6 +1359,7 @@ static inline void add_new_state_in_state_changes(struct task_struct* p, long st
 		// printk("IN ADD STATE %lld\r\n", new_change->time);
 	}
 }
+#endif
 
 static inline struct pid *task_pid(struct task_struct *task)
 {
