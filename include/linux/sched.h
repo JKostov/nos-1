@@ -1320,6 +1320,10 @@ static inline struct state_change* create_new_state_change(long current_state)
 /** NOS-EXTENSION */
 static inline void set_task_state_and_log_change(struct task_struct* p, long state)
 {
+	if (p == NULL)
+	{
+		return;
+	}
 	p->state = state;
 	struct state_change *new = create_new_state_change(state);
 	list_add_tail(&new->list, &p->state_changes.list);
