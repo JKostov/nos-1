@@ -214,6 +214,7 @@ struct task_group;
 		unsigned long flags; /* may shadow */			\
 		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
 		current->state = (state_value);				\
+		printk("STATE CHANGE: %ld\r\n", state_value);    \
 		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
 	} while (0)
 
