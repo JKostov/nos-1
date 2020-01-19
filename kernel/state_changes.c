@@ -1,7 +1,7 @@
 #include <linux/kernel.h>
-#include <linux/timekeeping.h>
 #include <include/linux/types.h>
-#include <../include/linux/sched.h>
+#include <include/linux/sched.h>
+#include <linux/timekeeping.h>
 
 SYSCALL_DEFINE2(task_state_changes, unsigned int, pid, unsigned int, tsec)
 {
