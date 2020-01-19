@@ -1341,17 +1341,17 @@ static inline void add_new_state_in_state_changes(struct task_struct* p, long st
 		return;
 	}
 
-	struct state_change *new_change = create_new_state_change(state);
+	// struct state_change *new_change = create_new_state_change(state);
 
-	if (new_change == NULL)
-	{
-		return;
-	}
+	// if (new_change == NULL)
+	// {
+	// 	return;
+	// }
 
-	if (state == TASK_INTERRUPTIBLE)
-	{
-		list_add(&new_change->list, &p->state_changes.list);
-	}
+	// if (state == TASK_INTERRUPTIBLE)
+	// {
+	// 	list_add(&new_change->list, &p->state_changes.list);
+	// }
 }
 #endif
 
