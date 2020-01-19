@@ -1311,6 +1311,11 @@ struct task_struct {
 static inline struct state_change* create_new_state_change(long current_state)
 {
 	struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
+	if (tmp == NULL)
+	{
+		return NULL;
+	}
+
 	tmp->state = current_state;
 	tmp->time = ktime_get_ns();
 	INIT_LIST_HEAD(&tmp->list);
@@ -1341,17 +1346,16 @@ static inline void add_new_state_in_state_changes(struct task_struct* p, long st
 		return;
 	}
 
-	// struct state_change *new_change = create_new_state_change(state);
+	struct state_change *new_change = create_new_state_change(state);
 
-	// if (new_change == NULL)
-	// {
-	// 	return;
-	// }
+	if (new_change == NULL)
+	{
+		return;
+	}
 
 	if (state == TASK_INTERRUPTIBLE)
 	{
-		printk("STATE CHANGE: %ld\r\n", state);
-		// list_add(&new_change->list, &p->state_changes.list);
+		list_add(&new_change->list, &p->state_changes.list);
 	}
 }
 #endif
