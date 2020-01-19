@@ -1329,12 +1329,15 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 	{
 		return;
 	}
+
 	p->state = state;
-	// struct state_change *new_change = create_new_state_change(state);
-	// if (new_change == NULL)
-	// {
-	// 	return;
-	// }
+
+	struct state_change *new_change = create_new_state_change(state);
+	if (new_change == NULL)
+	{
+		return;
+	}
+
 	// list_add(&new_change->list, &p->state_changes.list);
 }
 
@@ -1354,10 +1357,7 @@ static inline void add_new_state_in_state_changes(long state)
 		return;
 	}
 
-	if (state == TASK_INTERRUPTIBLE)
-	{
-		list_add(&new_change->list, &p->state_changes.list);
-	}
+	// list_add(&new_change->list, &p->state_changes.list);
 }
 #endif
 
