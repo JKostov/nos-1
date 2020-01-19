@@ -1357,7 +1357,7 @@ static inline void add_new_state_in_state_changes(long state)
 		return;
 	}
 
-	// list_add(&new_change->list, &p->state_changes);
+	list_add(&new_change->list, &p->state_changes);
 }
 #endif
 
