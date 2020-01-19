@@ -183,7 +183,7 @@ static inline void free_task_struct(struct task_struct *tsk)
 		kfree(tmp);
 	}*/
 	struct state_change *ptr, *next;
-	list_for_each_entry_safe(ptr, next, &p->state_changes, list) {
+	list_for_each_entry_safe(ptr, next, &tsk->state_changes, list) {
 		list_del(&ptr->list);
 		kfree(ptr);
 	}
