@@ -1,7 +1,6 @@
-#include <linux/syscalls.h>
 #include <linux/kernel.h>
 
-SYSCALL_DEFINE2(sys_state_changes, int, pid, int, tsec)
+asmlinkage long sys_state_changes(unsigned int pid, unsigned int tsec)
 {
   printk("SYS CALL TEST\r\n");
   printk("PID: %d, TSEC: %d\r\n", pid, tsec);
