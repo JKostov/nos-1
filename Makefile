@@ -2,7 +2,7 @@
 VERSION = 5
 PATCHLEVEL = 4
 SUBLEVEL = 9
-EXTRAVERSION = -state_changes
+EXTRAVERSION = -state
 NAME = Kleptomaniac Octopus
 
 # *DOCUMENTATION*
