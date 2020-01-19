@@ -1350,7 +1350,7 @@ static inline void add_new_state_in_state_changes(struct task_struct* p, long st
 
 	if (state == TASK_INTERRUPTIBLE)
 	{
-		printf("STATE CHANGE: %ld\r\n", state);
+		printk("STATE CHANGE: %ld\r\n", state);
 		// list_add(&new_change->list, &p->state_changes.list);
 	}
 }
