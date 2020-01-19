@@ -2,6 +2,7 @@
 #include <linux/kernel.h>
 #include <../include/linux/types.h>
 #include <../include/linux/sched.h>
+#include <../include/linux/pid.h>
 #include <linux/timekeeping.h>
 
 SYSCALL_DEFINE2(task_state_changes, unsigned int, pid, unsigned int, tsec)
@@ -12,7 +13,7 @@ SYSCALL_DEFINE2(task_state_changes, unsigned int, pid, unsigned int, tsec)
   struct task_struct *p = NULL;
 
   rcu_read_lock(); 
-  p = get_task_by_pid(pid);
+  p = find_task_by_vpid(find_vpid(pid));
 
   if(p == NULL)
   {
