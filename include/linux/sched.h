@@ -189,18 +189,18 @@ struct task_group;
  *
  * Also see the comments of try_to_wake_up().
  */
-/*#define __set_current_state(state_value)				\
+#define __set_current_state(state_value)				\
 	current->state = (state_value)
 
 #define set_current_state(state_value)					\
 	smp_store_mb(current->state, (state_value))
-*/
+
 
 /** NOS-EXTENSION */
-#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(state_value); })
+// #define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(state_value); })
 
 /** NOS-EXTENSION */
-#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(state_value); })
+// #define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(state_value); })
 
 /*
  * set_special_state() should be used for those states when the blocking task
