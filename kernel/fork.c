@@ -2238,8 +2238,8 @@ static __latent_entropy struct task_struct *copy_process(
 	INIT_LIST_HEAD(&p->state_changes.list);
 	p->state_changes.state = 0;
 	p->state_changes.time = 0;
-	// struct state_change *new_change = create_new_state_change(11);
-	// list_add(&new_change->list, &p->state_changes.list);
+	struct state_change *new_change = create_new_state_change(11);
+	list_add(&new_change->list, &p->state_changes.list);
 
 	return p;
 
