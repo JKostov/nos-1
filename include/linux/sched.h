@@ -1287,7 +1287,7 @@ struct task_struct {
 	unsigned long			prev_lowest_stack;
 #endif
 
-	struct state_change state_changes;
+	struct list_head state_changes;
 
 	/*
 	 * New fields for task_struct should be added above here, so that
@@ -1338,7 +1338,7 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 		return;
 	}
 
-	// list_add(&new_change->list, &p->state_changes.list);
+	// list_add(&new_change->list, &p->state_changes);
 }
 
 /** NOS-EXTENSION */
@@ -1357,7 +1357,7 @@ static inline void add_new_state_in_state_changes(long state)
 		return;
 	}
 
-	// list_add(&new_change->list, &p->state_changes.list);
+	// list_add(&new_change->list, &p->state_changes);
 }
 #endif
 
