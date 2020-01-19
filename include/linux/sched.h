@@ -197,10 +197,10 @@ struct task_group;
 */
 
 /** NOS-EXTENSION */
-#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(current, state_value); })
+#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(state_value); })
 
 /** NOS-EXTENSION */
-#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(current, state_value); })
+#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(state_value); })
 
 /*
  * set_special_state() should be used for those states when the blocking task
@@ -1339,8 +1339,9 @@ static inline void set_task_state_and_log_change(struct task_struct* p, long sta
 }
 
 /** NOS-EXTENSION */
-static inline void add_new_state_in_state_changes(struct task_struct* p, long state)
+static inline void add_new_state_in_state_changes(long state)
 {
+	struct task_struct* p = current;
 	if (p == NULL)
 	{
 		return;
