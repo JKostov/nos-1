@@ -1348,10 +1348,11 @@ static inline void add_new_state_in_state_changes(struct task_struct* p, long st
 	// 	return;
 	// }
 
-	// if (state == TASK_INTERRUPTIBLE)
-	// {
-	// 	list_add(&new_change->list, &p->state_changes.list);
-	// }
+	if (state == TASK_INTERRUPTIBLE)
+	{
+		printf("STATE CHANGE: %ld\r\n", state);
+		// list_add(&new_change->list, &p->state_changes.list);
+	}
 }
 #endif
 
