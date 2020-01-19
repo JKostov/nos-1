@@ -1,4 +1,5 @@
-#include <linu/kernel.h>
+#include <linux/kernel.h>
+#include <include/linux/types.h>
 
 asmlinkage long sys_state_changes(pid_t pid, unsigned int tsec)
 {
