@@ -5,7 +5,7 @@
 #include <../include/linux/pid.h>
 #include <linux/timekeeping.h>
 
-SYSCALL_DEFINE2(task_state_changes, unsigned int, pid, unsigned int, tsec)
+SYSCALL_DEFINE2(state_changes, unsigned int, pid, unsigned int, tsec)
 {
   printk("SYS CALL TEST\r\n");
   printk("PID: %d, TSEC: %d\r\n", pid, tsec);

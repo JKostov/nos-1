@@ -358,7 +358,7 @@
 434	common	pidfd_open		__x64_sys_pidfd_open
 435	common	clone3			__x64_sys_clone3/ptregs
 # Custom
-436	64	task_state_changes  sys_state_changes
+436	64	state_changes   __x64_sys_state_changes
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact

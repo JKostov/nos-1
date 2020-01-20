@@ -1423,4 +1423,4 @@ long compat_ksys_semtimedop(int semid, struct sembuf __user *tsems,
 
 #endif
 
-asmlinkage long task_state_changes(pid_t pid, unsigned int tsec);
+asmlinkage long sys_state_changes(unsigned int, unsigned int);
