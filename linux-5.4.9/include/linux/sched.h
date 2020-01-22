@@ -1357,8 +1357,8 @@ static inline void add_new_state_in_state_changes(long state)
 		return;
 	}
 
-	printk("Testing change %ld\r\n", state);
-	// list_add(&new_change->list, &p->state_changes);
+	// printk("Testing change %ld\r\n", state);
+	list_add(&new_change->list, &p->state_changes);
 }
 #endif
 
