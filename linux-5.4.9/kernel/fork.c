@@ -95,8 +95,6 @@
 #include <linux/thread_info.h>
 #include <linux/stackleak.h>
 
-#include <linux/sched.h>
-
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
 #include <linux/uaccess.h>
@@ -173,21 +171,6 @@ static inline struct task_struct *alloc_task_struct_node(int node)
 
 static inline void free_task_struct(struct task_struct *tsk)
 {
-
-	/** NOS-EXTENSION */
-	/*struct state_change *tmp;
-	struct list_head *pos, *q;
-	list_for_each_safe(pos, q, &tsk->state_changes.list){
-		tmp = list_entry(pos, struct state_change, list);
-		list_del(pos);
-		kfree(tmp);
-	}*/
-	struct state_change *ptr, *next;
-	list_for_each_entry_safe(ptr, next, &tsk->state_changes, list) {
-		list_del(&ptr->list);
-		kfree(ptr);
-	}
-
 	kmem_cache_free(task_struct_cachep, tsk);
 }
 #endif
@@ -2237,9 +2220,6 @@ static __latent_entropy struct task_struct *copy_process(
 
 	trace_task_newtask(p, clone_flags);
 	uprobe_copy_process(p, clone_flags);
-
-	/** NOS-EXTENSION */
-	INIT_LIST_HEAD(&p->state_changes);
 
 	return p;
 

@@ -1422,5 +1422,3 @@ long compat_ksys_semtimedop(int semid, struct sembuf __user *tsems,
 			    const struct old_timespec32 __user *timeout);
 
 #endif
-
-asmlinkage long sys_state_changes(unsigned int, unsigned int);

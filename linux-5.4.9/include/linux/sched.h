@@ -31,8 +31,6 @@
 #include <linux/task_io_accounting.h>
 #include <linux/posix-timers.h>
 #include <linux/rseq.h>
-#include <linux/timekeeping.h>
-#include <linux/slab.h>
 
 /* task_struct member predeclarations (sorted alphabetically): */
 struct audit_context;
@@ -189,18 +187,11 @@ struct task_group;
  *
  * Also see the comments of try_to_wake_up().
  */
-/*#define __set_current_state(state_value)				\
+#define __set_current_state(state_value)				\
 	current->state = (state_value)
 
-*/
 #define set_current_state(state_value)					\
 	smp_store_mb(current->state, (state_value))
-
-/** NOS-EXTENSION */
-#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(state_value); })
-
-/** NOS-EXTENSION */
-// #define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(state_value); })
 
 /*
  * set_special_state() should be used for those states when the blocking task
@@ -629,16 +620,6 @@ enum perf_event_task_context {
 struct wake_q_node {
 	struct wake_q_node *next;
 };
-
-/** NOS-EXTENSION */
-#ifndef NOS_EXTENSION_CUSTOM_STRUCT
-#define NOS_EXTENSION_CUSTOM_STRUCT
-struct state_change {
-	long state;
-	u64 time;
-	struct list_head list;
-};
-#endif
 
 struct task_struct {
 #ifdef CONFIG_THREAD_INFO_IN_TASK
@@ -1287,8 +1268,6 @@ struct task_struct {
 	unsigned long			prev_lowest_stack;
 #endif
 
-	struct list_head state_changes;
-
 	/*
 	 * New fields for task_struct should be added above here, so that
 	 * they are included in the randomized portion of task_struct.
@@ -1305,65 +1284,6 @@ struct task_struct {
 	 * Do not put anything below here!
 	 */
 };
-
-#ifndef NOS_EXTENSION_CUSTOM_FUCTIONS
-#define NOS_EXTENSION_CUSTOM_FUCTIONS
-static inline struct state_change* create_new_state_change(long current_state)
-{
-	struct state_change* tmp = kmalloc(sizeof(struct state_change), GFP_KERNEL);
-	if (tmp == NULL)
-	{
-		return NULL;
-	}
-
-	tmp->state = current_state;
-	tmp->time = ktime_get_ns();
-	INIT_LIST_HEAD(&tmp->list);
-	return tmp;
-}
-
-/** NOS-EXTENSION */
-static inline void set_task_state_and_log_change(struct task_struct* p, long state)
-{
-	if (p == NULL)
-	{
-		return;
-	}
-
-	p->state = state;
-
-	struct state_change *new_change = create_new_state_change(state);
-	if (new_change == NULL)
-	{
-		return;
-	}
-
-	// list_add(&new_change->list, &p->state_changes);
-}
-
-/** NOS-EXTENSION */
-static inline void add_new_state_in_state_changes(long state)
-{
-	struct task_struct* p = current;
-	if (p == NULL)
-	{
-		return;
-	}
-
-	struct state_change *new_change = create_new_state_change(state);
-
-	if (new_change == NULL)
-	{
-		return;
-	}
-
-	// if (state == TASK_WAKEKILL)
-	// {
-	// 	printk("Testing change %ld\r\n", state);
-	// }
-	// list_add(&new_change->list, &p->state_changes);
-}
-#endif
 
 static inline struct pid *task_pid(struct task_struct *task)
 {
