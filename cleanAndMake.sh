@@ -7,7 +7,7 @@ sudo rm linux-libc-dev_5.4.9-state*
 sudo apt-get --purge remove linux-image-5.4.9-state
 sudo apt-get --purge remove linux-headers-5.4.9-state
 
-git pull origin master
+git pull
 
 cd linux-5.4.9
 make clean
