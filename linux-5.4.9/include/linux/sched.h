@@ -187,11 +187,17 @@ struct task_group;
  *
  * Also see the comments of try_to_wake_up().
  */
-#define __set_current_state(state_value)				\
+/*#define __set_current_state(state_value)				\
 	current->state = (state_value)
 
 #define set_current_state(state_value)					\
-	smp_store_mb(current->state, (state_value))
+	smp_store_mb(current->state, (state_value))*/
+
+	/* NOS-EXTENSION */
+#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(state_value); })
+
+/* NOS-EXTENSION */
+#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(state_value); })
 
 /*
  * set_special_state() should be used for those states when the blocking task
@@ -1268,6 +1274,9 @@ struct task_struct {
 	unsigned long			prev_lowest_stack;
 #endif
 
+	/* NOS-EXTENSION */
+	int test;
+
 	/*
 	 * New fields for task_struct should be added above here, so that
 	 * they are included in the randomized portion of task_struct.
@@ -1284,6 +1293,19 @@ struct task_struct {
 	 * Do not put anything below here!
 	 */
 };
+
+/* NOS-EXTENSION */
+static inline void add_new_state_in_state_changes()
+{
+	struct task_struct* p = current;
+	if (p == NULL)
+	{
+		return;
+	}
+
+	p->test = p->test + 1;
+	printk("PRINT %d\r\n", p->test);
+}
 
 static inline struct pid *task_pid(struct task_struct *task)
 {
