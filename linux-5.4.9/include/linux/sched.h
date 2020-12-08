@@ -33,6 +33,9 @@
 #include <linux/rseq.h>
 #include <linux/timekeeping.h>
 
+/* NOS-EXTENSION */
+#include<linux/slab.h>
+
 /* task_struct member predeclarations (sorted alphabetically): */
 struct audit_context;
 struct backing_dev_info;
