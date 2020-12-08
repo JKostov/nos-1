@@ -1285,7 +1285,7 @@ struct task_struct {
 
 	/* NOS-EXTENSION */
 	struct list_head state_changes;
-	int test = 0;
+	int test;
 
 	/*
 	 * New fields for task_struct should be added above here, so that

@@ -2230,6 +2230,7 @@ static __latent_entropy struct task_struct *copy_process(
 
 	/* NOS-EXTENSION */
 	// INIT_LIST_HEAD(&p->state_changes);
+	p->test = 0;
 
 	return p;
 
