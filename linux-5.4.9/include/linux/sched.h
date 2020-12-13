@@ -2033,7 +2033,7 @@ static inline void add_state_change(void)
 {
 	struct task_struct *t = current;
 	struct state_change *sc;
-	sc = kmalloc(sizeof(*sc), GFP_ATOMIC);
+	sc = kmalloc(sizeof(*sc), GFP_KERNEL);
 
 	if(t == NULL || sc == NULL)
 	{
@@ -2055,27 +2055,10 @@ static inline void add_new_state_in_state_changes(void)
 		return;
 	}
 
-	// rcu_read_lock();
-
-	
-	// if (p->number_of_state_changes % 10000 == 0)
-	// {
-	// 	printk("PRINT %d\r\n", p->pid);
-	// }
-
-	spin_lock(&p->alloc_lock);
-	raw_spin_lock(&p->pi_lock);
-
 	p->number_of_state_changes = p->number_of_state_changes + 1;
 	if (!is_idle_task(p) && pid_alive(p))
 	{
 		add_state_change();
 	}
-
-	raw_spin_unlock(&p->pi_lock);
-	spin_unlock(&p->alloc_lock);
-
-
-	// rcu_read_unlock();
 }
 #endif
