@@ -11,6 +11,10 @@
 
 #include <asm/current.h>
 
+/* NOS-EXTENSION */
+#include <linux/slab.h>
+#include <linux/timekeeping.h>
+
 #include <linux/pid.h>
 #include <linux/sem.h>
 #include <linux/shm.h>
@@ -60,6 +64,9 @@ struct sighand_struct;
 struct signal_struct;
 struct task_delay_info;
 struct task_group;
+
+/* NOS-EXTENSION */
+struct state_change;
 
 /*
  * Task state bitmask. NOTE! These bits are also
@@ -194,10 +201,10 @@ struct task_group;
 	smp_store_mb(current->state, (state_value))*/
 
 	/* NOS-EXTENSION */
-#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(state_value); })
+#define __set_current_state(state_value) ({ current->state = (state_value); add_new_state_in_state_changes(); })
 
 /* NOS-EXTENSION */
-#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); add_new_state_in_state_changes(state_value); })
+#define set_current_state(state_value) ({ smp_store_mb(current->state, (state_value)); })
 
 /*
  * set_special_state() should be used for those states when the blocking task
@@ -1275,7 +1282,8 @@ struct task_struct {
 #endif
 
 	/* NOS-EXTENSION */
-	int test;
+	unsigned long number_of_state_changes;
+	struct list_head state_changes;
 
 	/*
 	 * New fields for task_struct should be added above here, so that
@@ -1293,19 +1301,6 @@ struct task_struct {
 	 * Do not put anything below here!
 	 */
 };
-
-/* NOS-EXTENSION */
-static inline void add_new_state_in_state_changes()
-{
-	struct task_struct* p = current;
-	if (p == NULL)
-	{
-		return;
-	}
-
-	p->test = p->test + 1;
-	printk("PRINT %d\r\n", p->test);
-}
 
 static inline struct pid *task_pid(struct task_struct *task)
 {
@@ -2019,4 +2014,68 @@ int sched_trace_rq_cpu(struct rq *rq);
 
 const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
 
+#endif
+
+
+/* NOS-EXTENSION */
+#ifndef NOS_EXTENSION_STATE_CHANGE
+#define NOS_EXTENSION_STATE_CHANGE
+
+/* NOS-EXTENSION */
+struct state_change {
+	long state;
+	u64 time;
+	struct list_head list;
+};
+
+/* NOS-EXTENSION */
+static inline void add_state_change(void)
+{
+	struct task_struct *t = current;
+	struct state_change *sc;
+	sc = kmalloc(sizeof(*sc), GFP_ATOMIC);
+
+	if(t == NULL || sc == NULL)
+	{
+		return;
+	}
+
+	sc->state = t->state;
+	sc->time = ktime_get_ns();
+
+	list_add_rcu(&sc->list, &t->state_changes);
+}
+
+/* NOS-EXTENSION */
+static inline void add_new_state_in_state_changes(void)
+{
+	struct task_struct *p = current;
+	if (p == NULL)
+	{
+		return;
+	}
+
+	// rcu_read_lock();
+
+	
+	// if (p->number_of_state_changes % 10000 == 0)
+	// {
+	// 	printk("PRINT %d\r\n", p->pid);
+	// }
+
+	spin_lock(&p->alloc_lock);
+	raw_spin_lock(&p->pi_lock);
+
+	p->number_of_state_changes = p->number_of_state_changes + 1;
+	if (!is_idle_task(p) && pid_alive(p))
+	{
+		add_state_change();
+	}
+
+	raw_spin_unlock(&p->pi_lock);
+	spin_unlock(&p->alloc_lock);
+
+
+	// rcu_read_unlock();
+}
 #endif

@@ -2222,7 +2222,8 @@ static __latent_entropy struct task_struct *copy_process(
 	uprobe_copy_process(p, clone_flags);
 
 	/* NOS-EXTENSION */
-	p->test = 0;
+	p->number_of_state_changes = 0;
+	INIT_LIST_HEAD(&p->state_changes);
 
 	return p;
 
