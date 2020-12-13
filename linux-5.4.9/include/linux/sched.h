@@ -2043,7 +2043,7 @@ static inline void add_state_change(void)
 	sc->state = t->state;
 	sc->time = ktime_get_ns();
 
-	list_add_rcu(&sc->list, &t->state_changes);
+	list_add(&sc->list, &t->state_changes);
 }
 
 /* NOS-EXTENSION */
@@ -2055,9 +2055,9 @@ static inline void add_new_state_in_state_changes(void)
 		return;
 	}
 
-	p->number_of_state_changes = p->number_of_state_changes + 1;
-	if (!is_idle_task(p) && pid_alive(p))
+	if (!is_idle_task(p))
 	{
+		p->number_of_state_changes = p->number_of_state_changes + 1;
 		add_state_change();
 	}
 }
