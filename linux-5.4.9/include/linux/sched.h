@@ -2033,7 +2033,7 @@ static inline void add_state_change(void)
 {
 	struct task_struct *t = current;
 	struct state_change *sc;
-	sc = kmalloc(sizeof(*sc), GFP_KERNEL);
+	sc = kmalloc(sizeof(*sc), GFP_ATOMIC);
 
 	if(t == NULL || sc == NULL)
 	{
@@ -2043,7 +2043,7 @@ static inline void add_state_change(void)
 	sc->state = t->state;
 	sc->time = ktime_get_ns();
 
-	list_add(&sc->list, &t->state_changes);
+	list_add_rcu(&sc->list, &t->state_changes);
 }
 
 /* NOS-EXTENSION */
