@@ -2057,14 +2057,13 @@ static inline void add_new_state_in_state_changes(void)
 
 	if (!is_idle_task(p))
 	{
-		spin_lock(&p->alloc_lock);
-		raw_spin_lock(&p->pi_lock);
+		unsigned long flags;
+		raw_spin_lock_irqsave(&current->pi_lock, flags);
 
 		p->number_of_state_changes = p->number_of_state_changes + 1;
 		add_state_change();
 
-		raw_spin_unlock(&p->pi_lock);
-		spin_unlock(&p->alloc_lock);
+		raw_spin_unlock_irqrestore(&current->pi_lock, flags);
 	}
 }
 #endif
