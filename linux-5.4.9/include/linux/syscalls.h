@@ -1424,3 +1424,4 @@ long compat_ksys_semtimedop(int semid, struct sembuf __user *tsems,
 #endif
 
 asmlinkage long sys_hello(void);
+asmlinkage long print_state_changes(pid_t pid);
