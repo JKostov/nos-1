@@ -7,10 +7,9 @@
 static void print_states(struct task_struct *p, unsigned int milliseconds)
 {
   struct state_change *state_changes;
-  u64 time_ns = ktime_get_ns();
+  u64 time_ns = ktime_get_real();
   u64 max_time = time_ns - milliseconds * 1000000;
 
-  printk("UNIX: %ld\n", ktime_get_real());
   printk("TIME: %ld\n", time_ns);
   printk("MAX TIME: %ld\n", max_time);
 
@@ -19,10 +18,10 @@ static void print_states(struct task_struct *p, unsigned int milliseconds)
   printk("[%d] Process states: ", &p->pid);
 	list_for_each_entry(state_changes, &p->state_changes, list)
   {
-    if (counter == 20)
-    {
-      return;
-    }
+    // if (state_changes->time > max_time)
+    // {
+    //   return;
+    // }
 
     printk("State: %ld\t, Time: %ld\n", state_changes->state, state_changes->time);
   }
