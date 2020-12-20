@@ -4,7 +4,7 @@
 #include <linux/syscalls.h>
 #include <linux/timekeeping.h>
 
-static void print_state_changes(struct task_struct *p, int milliseconds)
+static void print_states(struct task_struct *p, int milliseconds)
 {
   struct state_change *state_changes;
   u64 time_ns = ktime_get_ns();
@@ -42,7 +42,7 @@ SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, milliseconds)
     
   }
 
-  print_state_changes(p, milliseconds);
+  print_states(p, milliseconds);
 
   return 0;
 }
