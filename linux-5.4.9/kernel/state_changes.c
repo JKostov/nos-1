@@ -10,6 +10,7 @@ static void print_states(struct task_struct *p, unsigned int milliseconds)
   u64 time_ns = ktime_get_ns();
   u64 max_time = time_ns - milliseconds * 1000000;
 
+  printk("UNIX: %ld\n", ktime_get_real());
   printk("TIME: %ld\n", time_ns);
   printk("MAX TIME: %ld\n", max_time);
 
