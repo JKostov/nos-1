@@ -7,7 +7,7 @@
 SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, seconds)
 {
   struct task_struct *p;
-  printk("SYSCALL print state changes for process with pid: %d, for the last %d miliseconds\n", pid, seconds);
+  printk("SYSCALL print state changes for process with pid: %d, for the last %d seconds\n", pid, seconds);
 
   p = find_task_by_vpid(pid);
 
