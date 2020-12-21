@@ -4,10 +4,10 @@
 #include <linux/syscalls.h>
 #include <linux/timekeeping.h>
 
-SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, milliseconds)
+SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, seconds)
 {
   struct task_struct *p;
-  printk("SYSCALL print state changes for process with pid: %d, for the last %d miliseconds\n", pid, milliseconds);
+  printk("SYSCALL print state changes for process with pid: %d, for the last %d miliseconds\n", pid, seconds);
 
   p = find_task_by_vpid(pid);
 
@@ -19,8 +19,8 @@ SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, milliseconds)
   }
 
   struct state_change *state_changes;
-  u64 time_ns = ktime_get();
-  u64 max_time = time_ns - (((unsigned int)milliseconds) * 1000000);
+  time64_t time_ns = ktime_get_seconds();
+  time64_t max_time = time_ns - seconds;
 
   printk("CURR: %ld\n", time_ns);
   printk("MAX: %ld\n", max_time);

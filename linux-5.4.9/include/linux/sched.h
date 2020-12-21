@@ -2024,7 +2024,7 @@ const struct cpumask *sched_trace_rd_span(struct root_domain *rd);
 /* NOS-EXTENSION */
 struct state_change {
 	long state;
-	u64 time;
+	time64_t time;
 	struct list_head list;
 };
 
@@ -2041,7 +2041,7 @@ static inline void add_state_change(void)
 	}
 
 	sc->state = t->state;
-	sc->time = ktime_get();
+	sc->time = ktime_get_seconds();
 
 	list_add_rcu(&sc->list, &t->state_changes);
 }
