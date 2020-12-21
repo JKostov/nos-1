@@ -22,18 +22,15 @@ SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, seconds)
   time64_t time_ns = ktime_get_seconds();
   time64_t max_time = time_ns - seconds;
 
-  printk("CURR: %ld\n", time_ns);
-  printk("MAX: %ld\n", max_time);
-
   printk("Process states: ");
 	list_for_each_entry(state_changes, &p->state_changes, list)
   {
-    // if (state_changes->time < max_time)
-    // {
-    //   return;
-    // }
+    if (state_changes->time < max_time)
+    {
+      return;
+    }
 
-    printk("State: %ld\t, Time: %ld\t Is: %d\n", state_changes->state, state_changes->time, state_changes->time < max_time);
+    printk("State: %ld\t, Time: %ld\n", state_changes->state, state_changes->time);
   }
 
   printk("\n");
