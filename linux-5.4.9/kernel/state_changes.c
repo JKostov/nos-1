@@ -22,6 +22,9 @@ SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, milliseconds)
   u64 time_ns = ktime_get_ns();
   u64 max_time = time_ns - ((unsigned int)milliseconds * 1000000);
 
+  printk("CURR: %ld\n", time_ns);
+  printk("MAX: %ld\n", max_time);
+
   printk("Process states: ");
 	list_for_each_entry(state_changes, &p->state_changes, list)
   {
