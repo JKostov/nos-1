@@ -19,7 +19,7 @@ SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, milliseconds)
   }
 
   struct state_change *state_changes;
-  u64 time_ns = ktime_get_real();
+  u64 time_ns = ktime_get_ns();
   u64 max_time = time_ns - milliseconds * 1000000;
 
   printk("TIME: %ld\n", time_ns);

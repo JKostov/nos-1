@@ -2041,7 +2041,7 @@ static inline void add_state_change(void)
 	}
 
 	sc->state = t->state;
-	sc->time = ktime_get_real();
+	sc->time = ktime_get_ns();
 
 	list_add_rcu(&sc->list, &t->state_changes);
 }
