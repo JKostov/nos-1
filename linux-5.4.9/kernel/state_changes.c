@@ -25,7 +25,7 @@ SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, milliseconds)
   printk("Process states: ");
 	list_for_each_entry(state_changes, &p->state_changes, list)
   {
-    if (state_changes->time > max_time)
+    if (state_changes->time < max_time)
     {
       return;
     }
