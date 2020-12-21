@@ -20,20 +20,15 @@ SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, milliseconds)
 
   struct state_change *state_changes;
   u64 time_ns = ktime_get_ns();
-  u64 max_time = time_ns - milliseconds * 1000000;
+  u64 max_time = time_ns - ((unsigned int)milliseconds * 1000000);
 
-  printk("TIME: %ld\n", time_ns);
-  printk("MAX TIME: %ld\n", max_time);
-
-  int counter = 0;
-
-  printk("[%d] Process states: ", &p->pid);
+  printk("Process states: ");
 	list_for_each_entry(state_changes, &p->state_changes, list)
   {
-    // if (state_changes->time > max_time)
-    // {
-    //   return;
-    // }
+    if (state_changes->time > max_time)
+    {
+      return;
+    }
 
     printk("State: %ld\t, Time: %ld\n", state_changes->state, state_changes->time);
   }
