@@ -98,7 +98,8 @@ static ssize_t module_write(struct file *flip, const char __user *ubuf, size_t c
   printk("SCANNED: %d\n", scaned_num);
   printk("PID: %d, SEC: %d\n", pid, seconds);
 
-  *ppos = strlen(buffer);
+  int c = strlen(buffer);
+  *ppos = c;
   return c;
 }
 
