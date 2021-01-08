@@ -17,7 +17,7 @@ The state field of the process descriptor describes the current condition of the
 
 - **__TASK_STOPPED** - Process execution has stopped. The task is not running nor is it eligible to run. This occurs if the task receives the SIGSTOP, SIGTSTP, SIGTTIN, or SIGTTOU signal or if it receives any signal while it is being debugged
 
-![Process state changes] (https://github.com/JKostov/nos-1/tree/master/docs/processStates.png)
+![Process state changes](docs/processStates.png)
 
 In the [include/linux/sched.h#L83](https://github.com/JKostov/nos-1/blob/81c9b61b9353d9b60183c0b7dfd3b6c3254e55a7/linux-5.4.9/include/linux/sched.h#L83) file the process states are defined:
 ```c
