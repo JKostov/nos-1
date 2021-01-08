@@ -113,3 +113,162 @@ static inline void add_new_state_in_state_changes(void)
 	}
 }
 ```
+
+## List initialization and deallocation
+
+When new process is created the list_head for the state changes is not initialized. The list initialization is done in the `copy_process` function:
+
+[kernel/fork.c#L2236](https://github.com/JKostov/nos-1/blob/4c47feca4bc93465458f77ac9013745b1c9353dd/linux-5.4.9/kernel/fork.c#L2236)
+
+```c
+INIT_LIST_HEAD(&p->state_changes);
+```
+
+When process is terminated, the process descriptor for the process still exists, but the process is a zombie and is unable to run. After using the neccessary information for the terminated process, the task_struct of the process can be deallocated. At this point the state_changes list should be deallocated to. This is done in the `free_task_struct` function:
+
+[kernel/fork.c#L172](https://github.com/JKostov/nos-1/blob/4c47feca4bc93465458f77ac9013745b1c9353dd/linux-5.4.9/kernel/fork.c#L172)
+
+```c
+struct state_change *p;
+struct list_head *pos, *next;
+list_for_each_safe(pos, next, &tsk->state_changes)
+{
+        p = list_entry(pos, struct state_change, list);
+        list_del(pos);
+        kfree(p);
+}
+```
+
+# New System call for printing the process states
+
+Accessing the process `task_struct` is done in kernel space, so for reading the state_chages new syscall must be implemented.
+
+The new systemcall is defined in:
+
+[kernel/state_changes.c](https://github.com/JKostov/nos-1/blob/master/linux-5.4.9/kernel/state_changes.c)
+
+```c
+#include <linux/signal_types.h>
+#include <linux/sched.h>
+#include <linux/list.h>
+#include <linux/syscalls.h>
+#include <linux/timekeeping.h>
+
+SYSCALL_DEFINE2(print_state_changes, pid_t, pid, int, seconds)
+{
+  struct task_struct *p;
+  printk("SYSCALL print state changes for process with pid: %d, for the last %d seconds\n", pid, seconds);
+
+  p = find_task_by_vpid(pid);
+
+  if (p == NULL)
+  {
+    printk("Unable to find process with pid: %d\n", pid);
+    return -1;
+    
+  }
+
+  struct state_change *state_changes;
+  time64_t time_ns = ktime_get_seconds();
+  time64_t max_time = time_ns - seconds;
+
+  printk("Process states: ");
+	list_for_each_entry(state_changes, &p->state_changes, list)
+  {
+    if (state_changes->time < max_time)
+    {
+      return;
+    }
+
+    printk("State: %ld\t, Time: %ld\n", state_changes->state, state_changes->time);
+  }
+
+  printk("\n");
+
+  return 0;
+}
+```
+
+`SYSCALL_DEFINE2` macro is used for definition of a syscall with 2 parameters. The parameters sent are the PID and the seconds.
+
+## Module for printing the process state changes
+
+Module is implemented as a device to whom we can access through file sistem. Access is the same as the access to proc file system.
+
+The module implementation:
+
+[module/states_module.c](https://github.com/JKostov/nos-1/blob/master/module/states_module.c)
+
+```c
+static ssize_t module_read(struct file *flip, char __user *ubuf, size_t count, loff_t *ppos)
+{
+  if (pid == 0)
+  {
+    printk("Process PID not passed.\n");
+    return 0;
+  }
+
+  if (seconds == -1)
+  {
+    printk("Process PID not passed.\n");
+    return 0;
+  }
+
+  time64_t time_ns = ktime_get_seconds();
+
+  p = pid_task(find_vpid(pid), PIDTYPE_PID);
+  if (p == NULL)
+  {
+    printk("Process with PID: %d not found\n", pid);
+    return 0;
+  }
+
+  printk("MODULE print state changes for process with pid: %d, for the last %d seconds\n", pid, seconds);
+
+  struct state_change *state_changes;
+  time64_t max_time = time_ns - seconds;
+
+  printk("Process states: ");
+  list_for_each_entry(state_changes, &p->state_changes, list)
+  {
+    if (state_changes->time < max_time)
+    {
+      return;
+    }
+
+    printk("State: %ld\t, Time: %ld\n", state_changes->state, state_changes->time);
+  }
+
+  printk("\n");
+
+  return 0;
+}
+
+static ssize_t module_write(struct file *flip, const char __user *ubuf, size_t count, loff_t *ppos)
+{
+  char buffer[100];
+  int scaned_num;
+
+  if (raw_copy_from_user(buffer, ubuf, count))
+  {
+    return -EINVAL;
+  }
+
+  scaned_num = sscanf(buffer, "%d %d", &pid, &seconds);
+
+  if (scaned_num != 2)
+  {
+    printk("Error while parsing pid\n");
+    return -EINVAL;
+  }
+
+  printk("SCANNED: %d\n", scaned_num);
+  printk("PID: %d, SEC: %d\n", pid, seconds);
+
+  int c = strlen(buffer);
+  *ppos = c;
+  return c;
+}
+```
+
+Modules are used for kernel extension without changing the kernel code. They can be loaded at runtime.

@@ -28,11 +28,6 @@ static int seconds = -1;
 module_param(seconds, int, 0660);
 MODULE_PARM_DESC(seconds, "Number of seconds");
 
-static void print_process_states(struct task_struct *p)
-{
-  
-}
-
 static ssize_t module_read(struct file *flip, char __user *ubuf, size_t count, loff_t *ppos)
 {
   if (pid == 0)

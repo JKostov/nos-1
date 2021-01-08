@@ -206,16 +206,6 @@ repeat:
 	ptrace_release_task(p);
 	__exit_signal(p);
 
-	/* NOS-EXTENSION */
-	// struct state_change *sc;
-	// struct list_head *pos;
-	// list_for_each(pos, &p->state_changes)
-	// {
-	// 	sc = list_entry(pos, struct state_change, list);
-	// 	list_del(pos);
-	// 	kfree(sc);
-	// }
-
 	/*
 	 * If we are the last non-leader member of the thread
 	 * group, and the leader is zombie, then notify the
