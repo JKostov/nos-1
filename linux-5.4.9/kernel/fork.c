@@ -171,6 +171,16 @@ static inline struct task_struct *alloc_task_struct_node(int node)
 
 static inline void free_task_struct(struct task_struct *tsk)
 {
+	/* NOS-EXTENSION */
+	struct state_change *p;
+	struct list_head *pos, *next;
+	list_for_each_safe(pos, next, &tsk->state_changes)
+	{
+		p = list_entry(pos, struct state_change, list);
+		list_del(pos);
+		kfree(p);
+	}
+
 	kmem_cache_free(task_struct_cachep, tsk);
 }
 #endif
